@@ -1,26 +1,20 @@
-﻿using GraphQL;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics.Metrics;
-using System.Reflection.Emit;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using ToDoList.Models;
 using ToDoList.UseDB;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Globalization;
+
 
 namespace ToDoList.Controllers
 {
     public class SubmitController : Controller
     {
-        private readonly Services Services = new ();
-       
+        private readonly Services _Services = new();
+
         public async Task<IActionResult> Index()
         {
 
-            List<TaskModel> getalltask = await Services.AllTask();
-            List<CategoryModel> category = await Services.AllCategory();
+            List<TaskModel> getalltask = await _Services.AllTask();
+            List<CategoryModel> category = await _Services.AllCategory();
             List<SelectListItem> CategorySelectList = new();
 
             foreach (CategoryModel item in category)
@@ -48,6 +42,8 @@ namespace ToDoList.Controllers
 
             TaskPast.Reverse();
 
+  
+
             SubmitModelVM init = new(){
                 DueDate = DateTime.Now,
                 Category = CategorySelectList, 
@@ -63,8 +59,8 @@ namespace ToDoList.Controllers
         public async Task<IActionResult> Index(int? id)
         {
 
-            List<TaskModel> getalltask = await Services.AllTask();
-            List<CategoryModel> category = await Services.AllCategory();
+            List<TaskModel> getalltask = await _Services.AllTask();
+            List<CategoryModel> category = await _Services.AllCategory();
             List<SelectListItem> CategorySelectList = new();
 
             foreach (CategoryModel item in category)
@@ -103,7 +99,7 @@ namespace ToDoList.Controllers
 
             if (id != null)
             {
-                TaskModel oneTaskById = await Services.GetOne((int)id);
+                TaskModel oneTaskById = await _Services.GetOne((int)id);
                 init.id = oneTaskById.id;
                 init.MyTask = oneTaskById.MyTask;
                 init.CategoryId = oneTaskById.CategoryId;
@@ -120,10 +116,10 @@ namespace ToDoList.Controllers
         {
             if (model.id != 0)
             {
-                await Services.UpdateTask(model.id, model.MyTask, model.DueDate.ToString(), model.CategoryId);
+                await _Services.UpdateTask(model.id, model.MyTask, model.DueDate.ToString(), model.CategoryId);
                 return RedirectToAction("Index");
             }
-            await Services.AddTask(model.MyTask, model.DueDate.ToString(), model.CategoryId);
+            await _Services.AddTask(model.MyTask, model.DueDate.ToString(), model.CategoryId);
             return RedirectToAction("Index");
         }
 
@@ -131,7 +127,7 @@ namespace ToDoList.Controllers
 
         public async Task<IActionResult> DeleteTask(int id)
         {
-            await Services.DeleteTask(id);
+            await _Services.DeleteTask(id);
             return RedirectToAction("Index");
         }
     }

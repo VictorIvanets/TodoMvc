@@ -35,7 +35,6 @@ namespace ToDoList.UseDB
             return [.. alltask.OrderBy(o => o.DueTimeSpan.TotalMinutes)];
           }
 
-
         public async Task<List<CategoryModel>> AllCategory()
         {
 
@@ -53,8 +52,6 @@ namespace ToDoList.UseDB
             }
             return allcategory;
         }
-
-
         public async Task<TaskModel> GetOne(int id)
         {
             List<List<string>> data = await GetDataFromDB.getDataList(SqlQuery.getOneById(id));
@@ -70,7 +67,6 @@ namespace ToDoList.UseDB
             };
             return onetask;
         }
-
         public async Task UpdateTask(int id, string task, string datatime, int categoryId)
         {
             await GetDataFromDB.getDataList(SqlQuery.updateById(id, task, datatime, categoryId));
@@ -82,15 +78,6 @@ namespace ToDoList.UseDB
             var res2 = await GetDataFromDB.getDataList(SqlQuery.ADDTABLE_TODOLIST());
         }
 
-
-
-        //public async Task<string> UpdateUser(string id, string name, string pass)
-        //{
-        //    List<List<string>> data = await GetDataFromDB.getDataList(SqlQuery.getOneById(Int32.Parse(id)));
-        //    if (data.Count == 0) return $"user not foud";
-        //    await GetDataFromDB.getDataList(SqlQuery.updateById(Int32.Parse(data[0][0]), name, pass));
-        //    return $"update ok";
-        //}
         public async Task DeleteTask(int id)
         {
             await GetDataFromDB.getDataList(SqlQuery.deleteById(id));

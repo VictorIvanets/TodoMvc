@@ -15,15 +15,6 @@ html {
     min-height: 100%;
 }
 
-/*:root {
-    --main-color: linear-gradient(0deg,rgba(255, 255, 255, 1) 25%, rgba(199, 165, 87, 0.377) 50%, rgba(255, 255, 255, 1) 75%);
-    --second-color: #a57e40;
-    --second-light-color: #a57e408c;
-    --accent-color: #4e3e19;
-    --main-text-color: #1b1b1b;
-    --index: calc( 1vw + 1vh )
-}*/
-
 :root {
     --main-color: #979998;
     --second-color: #474747;
@@ -33,13 +24,11 @@ html {
     --index: calc( 1vw + 1vh )
 }
 
-
 @media (max-width: 768px) {
     :root {
         --index: calc( 2vw + 2vh )
     }
 }
-
 
 a {
     text-decoration: none;

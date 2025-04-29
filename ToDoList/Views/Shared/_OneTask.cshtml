@@ -1,0 +1,77 @@
+﻿@model ToDoList.Models.TaskModel
+
+<div class="resultpage-item">
+
+    <div class="resultpage-item-header">
+        <p style="color: floralwhite">Категорія: <strong> @Model.CategoryName</strong></p>
+
+        <div class="resultpage-item-header-btn">
+            <form asp-controller="Submit" asp-action="DeleteTask" method="post">
+                <input type="hidden" name="id" value="@Model.id" />
+                <button title="ОБЕРЕЖНО! ВИДАЛЕННЯ БЕЗ ПІДТВЕРДЖЕННЯ" class="delete" type="submit">Delete</button>
+            </form>
+            <form asp-controller="Submit" asp-action="Index" method="post">
+                <input type="hidden" name="id" value="@Model.id" />
+                <button class="update" type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+    <div style="padding: 5px;">
+        @if (Model.DueTimeSpan.TotalMinutes < 0)
+        {
+            <p>Завдання: <s>@Model.MyTask</s></p>
+        }
+        else
+        {
+            <p><strong>Завдання: </strong>@Model.MyTask</p>
+        }
+        <br />
+        <p style="font-family: Calibri">
+            <strong>
+                Дата виконання:
+            </strong>@Model.DueDate.Day/@Model.DueDate.Month/@Model.DueDate.Year  <strong>
+                @Model.DueDate.Hour:@(Model.DueDate.Minute < 9 ? "0" + Model.DueDate.Minute : Model.DueDate.Minute)
+            </strong>
+        </p>
+
+    </div>
+
+
+    @if (Model.DueTimeSpan.TotalMinutes > 120)
+    {
+        <div style="background: green; width: 100%; padding: 5px;">
+            <p style="color: white; font-family: Calibri">
+                <strong>Залишилось:</strong>
+                @Model.DueTimeSpan.Days днів,
+                @Model.DueTimeSpan.Hours год.,
+                @Model.DueTimeSpan.Minutes хв.
+            </p>
+        </div>
+
+    }
+    else if (Model.DueTimeSpan.TotalMinutes < 0)
+    {
+        <div style="background: cornflowerblue; width: 100%; padding: 5px;">
+            <p style="color: white; font-family: Calibri">
+                <strong>Закінчилося:</strong>
+                @Model.DueTimeSpan.Days днів,
+                @Model.DueTimeSpan.Hours год.,
+                @Model.DueTimeSpan.Minutes хв.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div style="background: darkred; width: 100%; padding: 5px;">
+            <p style="color: white; font-family: Calibri">
+                <strong>Залишилось:</strong>
+                @Model.DueTimeSpan.Days днів,
+                @Model.DueTimeSpan.Hours год.,
+                @Model.DueTimeSpan.Minutes хв.
+            </p>
+        </div>
+
+    }
+
+
+</div>

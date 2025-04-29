@@ -1,0 +1,100 @@
+﻿@model ToDoList.Models.SubmitModelVM
+
+@{
+    ViewData["Title"] = "Form";
+}
+
+<div class="submitpage">
+    <a asp-action="Index"><h1>ToDoList</h1></a>
+    <div class="line"></div>
+
+    <form class="submitform" method="post" asp-action="AddTask">
+        <div class="inputitem">
+            <textarea 
+                required 
+                asp-for="MyTask"
+                value ="@Model.MyTask"
+            ></textarea>
+            @if (Model.id !=0)
+            {
+                <label class="updateLabel" asp-for="MyTask">UPDATE TASK    <a class="updateLabel-a" asp-action="Index"> ESC</a></label>
+            } else
+            {
+                <label asp-for="MyTask">AddTask</label>
+            }
+           
+        </div>
+        <div class="submitpage-btnblock">
+            <input class="inputdatatime" type="datetime-local"
+                   value="@Model.DueDateString"
+                   required
+                   asp-for="DueDate" />
+            <input asp-for="id" type="hidden" value="@Model.id">
+            <select asp-for="CategoryId" asp-items="@Model.Category">
+                <option value="@Model.Category" disabled selected>-Category-</option>
+            </select>
+            @if (Model.id != 0)
+            {
+                <button class="submitbottomred">Оновити</button>
+            }
+            else
+            {
+                <button class="submitbottom">Додати</button>
+            }
+            
+        </div>
+    </form>
+    <div class="line"></div>
+
+    <div class="submitform_container">
+
+        <div class="resultpage_conteiner">
+            <h4>Виконані</h4>
+            <div class="resultpage">
+                @foreach (var i in Model.allTaskPast)
+                {
+                    <partial name="_OneTask" model="i" />
+                }
+            </div>
+
+        </div>
+        <div class="resultpage_conteiner">
+            <h4>В роботі</h4>
+            <div class="resultpage">
+                @foreach (var i in Model.allTaskNow)
+                {
+                    <partial name="_OneTask" model="i" />
+                }
+            </div>
+        </div>
+        <div class="resultpage_conteiner">
+            <h4>Заплановані</h4>
+            <div class="resultpage">
+                @foreach (var i in Model.allTaskFuture)
+                {
+                    <partial name="_OneTask" model="i" />
+                }
+            </div>
+        </div>
+    </div>
+    <div class="line"></div>
+
+
+
+
+
+
+</div>
+
+@section Scripts {
+
+    <script>
+        // https:summernote.org/getting-started/
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 150
+            });
+        });
+    </script>
+}
+

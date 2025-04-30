@@ -3,7 +3,7 @@
 <div class="resultpage-item">
 
     <div class="resultpage-item-header">
-        <p style="color: floralwhite">Категорія: <strong> @Model.CategoryName</strong></p>
+        <p class="resultpage-item-header-categoryname"><strong> @Model.CategoryName</strong></p>
 
         <div class="resultpage-item-header-btn">
             <form asp-controller="Submit" asp-action="DeleteTask" method="post">
@@ -26,7 +26,7 @@
             <p><strong>Завдання: </strong>@Model.MyTask</p>
         }
         <br />
-        <p style="font-family: Calibri">
+        <p class="textforint textforintdark">
             <strong>
                 Дата виконання:
             </strong>@Model.DueDate.Day/@Model.DueDate.Month/@Model.DueDate.Year  <strong>
@@ -40,7 +40,7 @@
     @if (Model.DueTimeSpan.TotalMinutes > 120)
     {
         <div style="background: green; width: 100%; padding: 5px;">
-            <p style="color: white; font-family: Calibri">
+            <p class="textforint">
                 <strong>Залишилось:</strong>
                 @Model.DueTimeSpan.Days днів,
                 @Model.DueTimeSpan.Hours год.,
@@ -52,7 +52,7 @@
     else if (Model.DueTimeSpan.TotalMinutes < 0)
     {
         <div style="background: cornflowerblue; width: 100%; padding: 5px;">
-            <p style="color: white; font-family: Calibri">
+            <p class="textforint">
                 <strong>Закінчилося:</strong>
                 @Model.DueTimeSpan.Days днів,
                 @Model.DueTimeSpan.Hours год.,
@@ -63,7 +63,7 @@
     else
     {
         <div style="background: darkred; width: 100%; padding: 5px;">
-            <p style="color: white; font-family: Calibri">
+            <p class="textforint">
                 <strong>Залишилось:</strong>
                 @Model.DueTimeSpan.Days днів,
                 @Model.DueTimeSpan.Hours год.,

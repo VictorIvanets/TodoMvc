@@ -5,24 +5,31 @@
 }
 
 <div class="submitpage">
-    <a asp-action="Index"><h1>ToDoList</h1></a>
+    <div class="submitpage-headerbox">
+        <a asp-action="Index">
+            <div class="submitpage-headerbox-logobox">
+                <img class="submitpage-headerbox-logo" src="~/todoListLogo.svg" />
+            </div>
+
+
+        </a>
+    </div>
     <div class="line"></div>
 
     <form class="submitform" method="post" asp-action="AddTask">
         <div class="inputitem">
-            <textarea 
-                required 
-                asp-for="MyTask"
-                value ="@Model.MyTask"
-            ></textarea>
-            @if (Model.id !=0)
+            <textarea required
+                      asp-for="MyTask"
+                      value="@Model.MyTask"></textarea>
+            @if (Model.id != 0)
             {
                 <label class="updateLabel" asp-for="MyTask">UPDATE TASK    <a class="updateLabel-a" asp-action="Index"> ESC</a></label>
-            } else
+            }
+            else
             {
                 <label asp-for="MyTask">AddTask</label>
             }
-           
+
         </div>
         <div class="submitpage-btnblock">
             <input class="inputdatatime" type="datetime-local"
@@ -41,42 +48,50 @@
             {
                 <button class="submitbottom">Додати</button>
             }
-            
+
         </div>
     </form>
     <div class="line"></div>
 
     <div class="submitform_container">
+        <div class="submitform_container_wrapper">
+            <div class="resultpage_conteiner">
+                <div class="resultpage_conteiner_title_container">
+                    <h4 class="resultpage_conteiner_title">Виконані</h4>
+                </div>
+                <div class="resultpage">
+                    @foreach (var i in Model.allTaskPast)
+                    {
+                        <partial name="_OneTask" model="i" />
+                    }
+                </div>
 
-        <div class="resultpage_conteiner">
-            <h4>Виконані</h4>
-            <div class="resultpage">
-                @foreach (var i in Model.allTaskPast)
-                {
-                    <partial name="_OneTask" model="i" />
-                }
             </div>
-
-        </div>
-        <div class="resultpage_conteiner">
-            <h4>В роботі</h4>
-            <div class="resultpage">
-                @foreach (var i in Model.allTaskNow)
-                {
-                    <partial name="_OneTask" model="i" />
-                }
+            <div class="resultpage_conteiner">
+                <div class="resultpage_conteiner_title_container">
+                    <h4 class="resultpage_conteiner_title">В роботі</h4>
+                    <p class="resultpage_conteiner_next"></p>
+                </div>
+                <div class="resultpage">
+                    @foreach (var i in Model.allTaskNow)
+                    {
+                        <partial name="_OneTask" model="i" />
+                    }
+                </div>
             </div>
-        </div>
-        <div class="resultpage_conteiner">
-            <h4>Заплановані</h4>
-            <div class="resultpage">
-                @foreach (var i in Model.allTaskFuture)
-                {
-                    <partial name="_OneTask" model="i" />
-                }
+            <div class="resultpage_conteiner">
+                <div class="resultpage_conteiner_title_container">
+                    <h4 class="resultpage_conteiner_title">Заплановані</h4>
+                    <p class="resultpage_conteiner_nextnow"></p>
+                </div>
+                <div class="resultpage">
+                    @foreach (var i in Model.allTaskFuture)
+                    {
+                        <partial name="_OneTask" model="i" />
+                    }
+                </div>
             </div>
         </div>
     </div>
-    <div class="line"></div>
 </div>
 

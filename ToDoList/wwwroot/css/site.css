@@ -16,12 +16,13 @@ html {
 }
 
 :root {
+    --dark-color: #141414;
     --main-color: #979998;
     --second-color: #474747;
     --second-light-color: #dedede;
     --accent-color: #bab3b3;
     --main-text-color: #262626;
-    --index: calc( 1vw + 1vh )
+    --index: calc( 0.9vw + 0.9vh )
 }
 
 @media (max-width: 768px) {

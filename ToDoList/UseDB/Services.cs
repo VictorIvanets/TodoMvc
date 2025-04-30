@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using ToDoList.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using ToDoList.Models;
 
 namespace ToDoList.UseDB
 {

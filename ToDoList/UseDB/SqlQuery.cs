@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Threading.Tasks;
-
+﻿
 namespace ToDoList.UseDB
 {
     public static class SqlQuery

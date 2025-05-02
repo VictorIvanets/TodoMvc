@@ -27,7 +27,7 @@ body {
 
 .submitform_container_wrapper {
     height: max-content;
-    width: 300vw;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -128,7 +128,7 @@ body {
     }
 
 .resultpage_conteiner {
-    height: 55vh;
+    height: 49vh;
     width: 33%;
 }
 .resultpage_conteiner_title {
@@ -185,8 +185,10 @@ body {
         background: red;
     }
     .resultpage-item-header-btn .update:hover {
+        background: #e0ad04;
+    }
+    .resultpage-item-header-btn .completedbtn:hover {
         background: green;
-        
     }
 
 
@@ -262,15 +264,13 @@ body {
     border-radius: 10px;
 }
 .updateLabel {
-    background: red;
-    color: white !important;
+    color: red !important;
     padding: 3px;
     border-radius: 0.3rem;
 }
     .updateLabel a {
-        color: white !important;
+        color: black !important;
         font-size: 1.4rem;
-        background: gray;
         padding: 1px;
     }
 .submitbottom {
@@ -318,7 +318,10 @@ body {
     {
         width: 100%;
     }
-
+.completedbtn {
+    font-size: calc(var(--index)*0.8)!important;
+    padding: 1px !important;
+}
 
 @media (max-width: 768px) {
     .submitform_container {

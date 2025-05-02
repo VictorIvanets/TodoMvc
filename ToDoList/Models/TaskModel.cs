@@ -15,5 +15,7 @@ namespace ToDoList.Models
 
         public string CategoryName { get; set; }
 
+        public bool IsCompleted { get; set; }
+
     }
 }

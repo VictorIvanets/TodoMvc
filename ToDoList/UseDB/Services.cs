@@ -5,9 +5,9 @@ namespace ToDoList.UseDB
     public class Services
     {
 
-        public async Task AddTask(string task, string datatime, int categoryId )
+        public async Task AddTask(string task, string datatime, int categoryId, bool IsCompleted)
         {
-            List<List<string>> data = await GetDataFromDB.getDataList(SqlQuery.addTask( task, datatime, categoryId));
+            List<List<string>> data = await GetDataFromDB.getDataList(SqlQuery.addTask( task, datatime, categoryId, IsCompleted));
         }
 
         public async Task<List<TaskModel>> AllTask()
@@ -25,7 +25,8 @@ namespace ToDoList.UseDB
                     DueDate = DateTime.Parse(item[2]),
                     DueTimeSpan = DateTime.Parse(item[2]) - DateTime.Now,
                     CategoryId = Int32.Parse(item[3]),
-                    CategoryName = item[5]
+                    IsCompleted = item[4] == "True" ? true : false,
+                    CategoryName = item[6],
                 });
             }
             return [.. alltask.OrderBy(o => o.DueTimeSpan.TotalMinutes)];
@@ -59,13 +60,18 @@ namespace ToDoList.UseDB
                 DueDate = DateTime.Parse(data[0][2]),
                 DueTimeSpan = DateTime.Parse(data[0][2]) - DateTime.Now,
                 CategoryId = Int32.Parse(data[0][3]),
-                CategoryName = data[0][4]
+                CategoryName = data[0][6],
             };
             return onetask;
         }
         public async Task UpdateTask(int id, string task, string datatime, int categoryId)
         {
             await GetDataFromDB.getDataList(SqlQuery.updateById(id, task, datatime, categoryId));
+        }
+
+        public async Task SetIsCompleted(int id, bool IsCompleted)
+        {
+            await GetDataFromDB.getDataList(SqlQuery.SetIsCompletedById(id, IsCompleted, DateTime.Now.ToString()));
         }
 
         public async Task ADDTABEL()

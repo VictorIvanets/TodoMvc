@@ -32,11 +32,11 @@ namespace ToDoList.Controllers
 
             foreach (var item in getalltask)
             {
-                if (item.DueTimeSpan.TotalMinutes < 0)
+                if (item.DueTimeSpan.TotalMinutes < 0 || item.IsCompleted)
                     TaskPast.Add(item);
-                else if (item.DueTimeSpan.TotalMinutes > 120)
+                else if (item.DueTimeSpan.TotalMinutes > 120 && !item.IsCompleted)
                     TaskFuture.Add(item);
-                else if(item.DueTimeSpan.TotalMinutes > 0 && item.DueTimeSpan.TotalMinutes < 120)
+                else if(item.DueTimeSpan.TotalMinutes > 0 && item.DueTimeSpan.TotalMinutes < 120 && !item.IsCompleted)
                     TaskNow.Add(item);
             }
 
@@ -119,11 +119,23 @@ namespace ToDoList.Controllers
                 await _Services.UpdateTask(model.id, model.MyTask, model.DueDate.ToString(), model.CategoryId);
                 return RedirectToAction("Index");
             }
-            await _Services.AddTask(model.MyTask, model.DueDate.ToString(), model.CategoryId);
+            await _Services.AddTask(model.MyTask, model.DueDate.ToString(), model.CategoryId, false);
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SetIsCompleted(int id)
+        {
+                await _Services.SetIsCompleted(id, true);
+                return RedirectToAction("Index");
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> SetUnCompleted(int id)
+        {
+            await _Services.SetIsCompleted(id, false);
+            return RedirectToAction("Index");
+        }
 
         public async Task<IActionResult> DeleteTask(int id)
         {

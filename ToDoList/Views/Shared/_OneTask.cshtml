@@ -14,10 +14,24 @@
                 <input type="hidden" name="id" value="@Model.id" />
                 <button class="update" type="submit">Update</button>
             </form>
+            @if (!Model.IsCompleted)
+            {
+                <form asp-controller="Submit" asp-action="SetIsCompleted" method="post">
+                    <input type="hidden" name="id" value="@Model.id" />
+                    <button class="completedbtn" title="set completed" type="submit">☐</button>
+                </form>
+            }
+            else
+            {
+                <form asp-controller="Submit" asp-action="SetUnCompleted" method="post">
+                    <input type="hidden" name="id" value="@Model.id" />
+                    <button class="completedbtn" title="set uncompleted" type="submit">✔</button>
+                </form>
+            }
         </div>
     </div>
     <div style="padding: 5px;">
-        @if (Model.DueTimeSpan.TotalMinutes < 0)
+        @if (Model.DueTimeSpan.TotalMinutes < 0 || Model.IsCompleted)
         {
             <p>Завдання: <s>@Model.MyTask</s></p>
         }
@@ -37,7 +51,7 @@
     </div>
 
 
-    @if (Model.DueTimeSpan.TotalMinutes > 120)
+    @if (Model.DueTimeSpan.TotalMinutes > 120 && !Model.IsCompleted)
     {
         <div style="background: green; width: 100%; padding: 5px;">
             <p class="textforint">
@@ -49,18 +63,27 @@
         </div>
 
     }
-    else if (Model.DueTimeSpan.TotalMinutes < 0)
+    else if (Model.DueTimeSpan.TotalMinutes < 0 || Model.IsCompleted)
     {
         <div style="background: cornflowerblue; width: 100%; padding: 5px;">
-            <p class="textforint">
-                <strong>Закінчилося:</strong>
-                @Model.DueTimeSpan.Days днів,
-                @Model.DueTimeSpan.Hours год.,
-                @Model.DueTimeSpan.Minutes хв.
-            </p>
+            @if (Model.IsCompleted)
+            {
+                <p class="textforint">
+                    <strong>Виконано!</strong>
+                </p>
+            }
+            else if (!Model.IsCompleted)
+            {
+                <p class="textforint">
+                    <strong>Закінчилося:</strong>
+                    @Model.DueTimeSpan.Days днів,
+                    @Model.DueTimeSpan.Hours год.,
+                    @Model.DueTimeSpan.Minutes хв.
+                </p>
+            }
         </div>
     }
-    else
+    else if (Model.DueTimeSpan.TotalMinutes > 0 && Model.DueTimeSpan.TotalMinutes < 120 && !Model.IsCompleted)
     {
         <div style="background: darkred; width: 100%; padding: 5px;">
             <p class="textforint">

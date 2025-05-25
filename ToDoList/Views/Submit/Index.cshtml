@@ -10,17 +10,27 @@
             <div class="submitpage-headerbox-logobox">
                 <img class="submitpage-headerbox-logo" src="~/todoListLogo.svg" />
             </div>
-
-
         </a>
+        <div class="selectdb">
+        <form asp-controller="Submit" asp-action="SetServise" method="post">
+            <select asp-for="id">
+                <option disabled selected>-DB-</option>
+                <option value="1">SQL</option>
+                <option value="2">XML</option>
+            </select>
+            <button class="delete" type="submit">OK</button>
+        </form>
+        <h2 class="selectdb-text">Select DB</h2>
+        </div>
     </div>
     <div class="line"></div>
 
     <form class="submitform" method="post" asp-action="AddTask">
         <div class="inputitem">
-            <textarea required
+            <textarea 
                       asp-for="MyTask"
                       value="@Model.MyTask"></textarea>
+            <span asp-validation-for="MyTask" class="text-danger"></span>
             @if (Model.id != 0)
             {
                 <label class="updateLabel" asp-for="MyTask">UPDATE TASK    <a class="updateLabel-a" asp-action="Index"> ESC</a></label>
@@ -34,12 +44,13 @@
         <div class="submitpage-btnblock">
             <input class="inputdatatime" type="datetime-local"
                    value="@Model.DueDateString"
-                   required
                    asp-for="DueDate" />
+            <span asp-validation-for="DueDate" class="text-danger"></span>
             <input asp-for="id" type="hidden" value="@Model.id">
             <select asp-for="CategoryId" asp-items="@Model.Category">
                 <option value="@Model.Category" disabled selected>-Category-</option>
             </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
             @if (Model.id != 0)
             {
                 <button class="submitbottomred">Оновити</button>
@@ -57,7 +68,7 @@
         <div class="submitform_container_wrapper">
             <div class="resultpage_conteiner">
                 <div class="resultpage_conteiner_title_container">
-                    <h4 class="resultpage_conteiner_title">Виконані</h4>
+                    <h4 class="resultpage_conteiner_title">Виконані / Пропущені</h4>
                 </div>
                 <div class="resultpage">
                     @foreach (var i in Model.allTaskPast)
@@ -69,7 +80,7 @@
             </div>
             <div class="resultpage_conteiner">
                 <div class="resultpage_conteiner_title_container">
-                    <h4 class="resultpage_conteiner_title">В роботі</h4>
+                    <h4 class="resultpage_conteiner_title">В роботу</h4>
                     <p class="resultpage_conteiner_next"></p>
                 </div>
                 <div class="resultpage">
@@ -94,4 +105,8 @@
         </div>
     </div>
 </div>
-
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

@@ -8,13 +8,17 @@ namespace ToDoList.Controllers
 {
     public class SubmitController : Controller
     {
-        private readonly Services _Services = new();
+        private readonly SQLService _Services = new();
+        private readonly XMLService _ServicesX = new();
+        private bool useServise = StoreXML.GetStorage();
 
         public async Task<IActionResult> Index()
         {
+            var TEST = useServise;
+            var TESTRES = useServise;
 
-            List<TaskModel> getalltask = await _Services.AllTask();
-            List<CategoryModel> category = await _Services.AllCategory();
+            List<TaskModel> getalltask = useServise ? await _Services.AllTask() : _ServicesX.AllTask();
+            List<CategoryModel> category =  useServise? await _Services.GetAllCategory() : _ServicesX.GetAllCategory();
             List<SelectListItem> CategorySelectList = new();
 
             foreach (CategoryModel item in category)
@@ -56,11 +60,16 @@ namespace ToDoList.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(int? id)
         {
 
-            List<TaskModel> getalltask = await _Services.AllTask();
-            List<CategoryModel> category = await _Services.AllCategory();
+            List<TaskModel> getalltask = useServise 
+                ? await _Services.AllTask() 
+                : _ServicesX.AllTask();
+            List<CategoryModel> category = useServise 
+                ? await _Services.GetAllCategory() 
+                : _ServicesX.GetAllCategory();
             List<SelectListItem> CategorySelectList = new();
 
             foreach (CategoryModel item in category)
@@ -82,7 +91,9 @@ namespace ToDoList.Controllers
                     TaskPast.Add(item);
                 else if (item.DueTimeSpan.TotalMinutes > 120)
                     TaskFuture.Add(item);
-                else if (item.DueTimeSpan.TotalMinutes > 0 && item.DueTimeSpan.TotalMinutes < 120)
+                else if (item.DueTimeSpan.TotalMinutes > 0 
+                    && item.DueTimeSpan.TotalMinutes < 120)
+
                     TaskNow.Add(item);
             }
 
@@ -99,12 +110,14 @@ namespace ToDoList.Controllers
 
             if (id != null)
             {
-                TaskModel oneTaskById = await _Services.GetOne((int)id);
+                TaskModel oneTaskById = useServise ? await _Services.GetOne((int)id) : _ServicesX.GetOne((int)id);
                 init.id = oneTaskById.id;
                 init.MyTask = oneTaskById.MyTask;
                 init.CategoryId = oneTaskById.CategoryId;
                 init.DueDate = oneTaskById.DueDate;
-                init.DueDateString = DateTime.ParseExact(oneTaskById.DueDate.ToString(), "dd.MM.yyyy HH:mm:ss", null).ToString("yyyy-MM-ddTHH:mm:ss"); 
+                init.DueDateString = 
+                    DateTime.ParseExact(oneTaskById.DueDate.ToString(), "dd.MM.yyyy HH:mm:ss", null)
+                    .ToString("yyyy-MM-ddTHH:mm:ss"); 
             }
 
             return View(init);
@@ -112,34 +125,68 @@ namespace ToDoList.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTask(SubmitModelVM model)
         {
-            if (model.id != 0)
+            if (ModelState.IsValid)
             {
-                await _Services.UpdateTask(model.id, model.MyTask, model.DueDate.ToString(), model.CategoryId);
+                TimeSpan DueTimeSpan = model.DueDate - DateTime.Now;
+                string dataActual = DueTimeSpan.TotalMinutes < 0 
+                    ? DateTime.Now.ToString() 
+                    : model.DueDate.ToString();
+
+                CreateTaskModel newTask = new()
+                {
+                    Task = model.MyTask,
+                    DataTime = dataActual,
+                    CategoryId = model.CategoryId,
+                    IsCompleted = false,
+                };
+                if (model.id != 0)
+                {
+                    bool update  = useServise 
+                        ? await _Services.UpdateTask(model.id, newTask) 
+                        : _ServicesX.UpdateTask(model.id, newTask);
+                    return RedirectToAction("Index");
+                }
+                bool added = useServise 
+                    ? await _Services.AddTask(newTask) 
+                    : _ServicesX.AddTask(newTask);
                 return RedirectToAction("Index");
             }
-            await _Services.AddTask(model.MyTask, model.DueDate.ToString(), model.CategoryId, false);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> SetIsCompleted(int id)
         {
-                await _Services.SetIsCompleted(id, true);
-                return RedirectToAction("Index");
+            bool isCompl = useServise 
+                ? await _Services.IsCompleted(id, true, DateTime.Now.ToString()) 
+                : _ServicesX.IsCompleted(id, true, DateTime.Now.ToString());
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult SetServise(int id)
+        {
+            StoreXML.SetStorage(id);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> SetUnCompleted(int id)
         {
-            await _Services.SetIsCompleted(id, false);
+            bool unCompl = useServise 
+                ? await _Services.IsCompleted(id, false, DateTime.Now.ToString()) 
+                : _ServicesX.IsCompleted(id, false, DateTime.Now.ToString());
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DeleteTask(int id)
         {
-            await _Services.DeleteTask(id);
+            bool del = useServise 
+                ? await _Services.DeleteTask(id) 
+                : _ServicesX.DeleteTask(id);
             return RedirectToAction("Index");
         }
     }

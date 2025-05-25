@@ -6,6 +6,7 @@
         <p class="resultpage-item-header-categoryname"><strong> @Model.CategoryName</strong></p>
 
         <div class="resultpage-item-header-btn">
+            
             <form asp-controller="Submit" asp-action="DeleteTask" method="post">
                 <input type="hidden" name="id" value="@Model.id" />
                 <button title="ОБЕРЕЖНО! ВИДАЛЕННЯ БЕЗ ПІДТВЕРДЖЕННЯ" class="delete" type="submit">Delete</button>
@@ -56,7 +57,7 @@
         <div style="background: green; width: 100%; padding: 5px;">
             <p class="textforint">
                 <strong>Залишилось:</strong>
-                @Model.DueTimeSpan.Days днів,
+                @Model.DueTimeSpan.Days дн.,
                 @Model.DueTimeSpan.Hours год.,
                 @Model.DueTimeSpan.Minutes хв.
             </p>
@@ -74,11 +75,11 @@
             }
             else if (!Model.IsCompleted)
             {
-                <p class="textforint">
+                <p style="color: black" class="textforint">
                     <strong>Закінчилося:</strong>
-                    @Model.DueTimeSpan.Days днів,
-                    @Model.DueTimeSpan.Hours год.,
-                    @Model.DueTimeSpan.Minutes хв.
+                    @Math.Abs(Model.DueTimeSpan.Days)  дн.,
+                    @Math.Abs(Model.DueTimeSpan.Hours) год.,
+                    @Math.Abs(Model.DueTimeSpan.Minutes) хв. тому
                 </p>
             }
         </div>
@@ -88,7 +89,7 @@
         <div style="background: darkred; width: 100%; padding: 5px;">
             <p class="textforint">
                 <strong>Залишилось:</strong>
-                @Model.DueTimeSpan.Days днів,
+                @Model.DueTimeSpan.Days дн.,
                 @Model.DueTimeSpan.Hours год.,
                 @Model.DueTimeSpan.Minutes хв.
             </p>

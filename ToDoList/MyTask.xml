@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <MyTask Id="567">
+    <Task>New Task in XML</Task>
+    <DataTime>23.05.2025 14:57:55</DataTime>
+    <CategoryId>2</CategoryId>
+    <IsCompleted>0</IsCompleted>
+  </MyTask>
+  <MyTask Id="263">
+    <Task>One task for weekend</Task>
+    <DataTime>25.05.2025 15:04:16</DataTime>
+    <CategoryId>4</CategoryId>
+    <IsCompleted>0</IsCompleted>
+  </MyTask>
+  <MyTask Id="6216">
+    <Task>On task for work</Task>
+    <DataTime>23.05.2025 15:58:44</DataTime>
+    <CategoryId>1</CategoryId>
+    <IsCompleted>0</IsCompleted>
+  </MyTask>
+</Root>

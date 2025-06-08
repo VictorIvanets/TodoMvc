@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <Category Id="1">
+    <CategoryName>family</CategoryName>
+  </Category>
+  <Category Id="2">
+    <CategoryName>work</CategoryName>
+  </Category>
+  <Category Id="3">
+    <CategoryName>hobby</CategoryName>
+  </Category>
+  <Category Id="4">
+    <CategoryName>party</CategoryName>
+  </Category>
+  <Category Id="5">
+    <CategoryName>car</CategoryName>
+  </Category>
+</Root>

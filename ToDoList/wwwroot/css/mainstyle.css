@@ -259,9 +259,10 @@ body {
 
 .line {
     width: 100%;
-    height: 10px;
+    height: 5px;
     background: black;
     border-radius: 10px;
+    opacity: 0.5;
 }
 .updateLabel {
     color: red !important;
@@ -322,6 +323,60 @@ body {
     font-size: calc(var(--index)*0.8)!important;
     padding: 1px !important;
 }
+
+
+.selectdb {
+    width: 10rem;
+    height: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    .selectdb form {
+        width: 8rem;
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        gap: 0.3rem;
+    }
+
+    .selectdb select {
+        outline: none;
+        width: 5rem;
+        height: 2.5rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        border: none;
+        padding: 5px;
+        background: var(--second-color);
+        color: white;
+        text-align: center;
+    }
+    .selectdb p {
+        margin-bottom: 0;
+        font-size: 1.2rem;
+        color:cadetblue;
+    }
+
+    .selectdb button {
+        outline: none;
+        width: 5rem;
+        height: 2.5rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        border: none;
+        padding: 5px;
+        background: var(--second-color);
+        color: white;
+    }
+
+    .selectdb option {
+        text-align: center;
+        border-bottom: 2px solid black;
+    }
 
 @media (max-width: 768px) {
     .submitform_container {
@@ -398,4 +453,66 @@ body {
         color: var(--second-color);
         padding-left: 0.5rem;
     }
+
+    .selectdb {
+        position: absolute;
+        top: -60px;
+        width: 12rem;
+        height: 8rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0.5rem;
+        background: var(--second-color);
+        gap: 0.5rem;
+    }
+        .selectdb:hover {
+            top: 0;
+        }
+
+
+        .selectdb form {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            gap: 0.3rem;
+        }
+        .selectdb h2 {
+            font-size: calc(var(--index)*0.7);
+        }
+
+        .selectdb select {
+            outline: none;
+            width: 5rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            border: none;
+            padding: 5px;
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .selectdb button {
+            outline: none;
+            width: 5rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            border: none;
+            padding: 5px;
+            background: var(--dark-color);
+            color: white;
+            font-size: 10px;
+        }
+
+        .selectdb option {
+            text-align: center;
+            border-bottom: 2px solid black;
+            font-size: 10px;
+        }
+    
 }
+
+

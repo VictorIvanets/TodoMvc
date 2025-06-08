@@ -6,25 +6,26 @@
         <p class="resultpage-item-header-categoryname"><strong> @Model.CategoryName</strong></p>
 
         <div class="resultpage-item-header-btn">
-            <form asp-controller="Submit" asp-action="DeleteTask" method="post">
-                <input type="hidden" name="id" value="@Model.id" />
+            
+            <form asp-controller="ToDoList" asp-action="DeleteTask" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
                 <button title="ОБЕРЕЖНО! ВИДАЛЕННЯ БЕЗ ПІДТВЕРДЖЕННЯ" class="delete" type="submit">Delete</button>
             </form>
-            <form asp-controller="Submit" asp-action="Index" method="post">
-                <input type="hidden" name="id" value="@Model.id" />
+            <form asp-controller="ToDoList" asp-action="Index" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
                 <button class="update" type="submit">Update</button>
             </form>
             @if (!Model.IsCompleted)
             {
-                <form asp-controller="Submit" asp-action="SetIsCompleted" method="post">
-                    <input type="hidden" name="id" value="@Model.id" />
+                <form asp-controller="ToDoList" asp-action="SetIsCompleted" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
                     <button class="completedbtn" title="set completed" type="submit">☐</button>
                 </form>
             }
             else
             {
-                <form asp-controller="Submit" asp-action="SetUnCompleted" method="post">
-                    <input type="hidden" name="id" value="@Model.id" />
+                <form asp-controller="ToDoList" asp-action="SetUnCompleted" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
                     <button class="completedbtn" title="set uncompleted" type="submit">✔</button>
                 </form>
             }
@@ -56,7 +57,7 @@
         <div style="background: green; width: 100%; padding: 5px;">
             <p class="textforint">
                 <strong>Залишилось:</strong>
-                @Model.DueTimeSpan.Days днів,
+                @Model.DueTimeSpan.Days дн.,
                 @Model.DueTimeSpan.Hours год.,
                 @Model.DueTimeSpan.Minutes хв.
             </p>
@@ -65,35 +66,38 @@
     }
     else if (Model.DueTimeSpan.TotalMinutes < 0 || Model.IsCompleted)
     {
-        <div style="background: cornflowerblue; width: 100%; padding: 5px;">
+
             @if (Model.IsCompleted)
             {
+            <div style="background: cornflowerblue; width: 100%; padding: 5px;">
+
                 <p class="textforint">
                     <strong>Виконано!</strong>
                 </p>
+            </div>
             }
             else if (!Model.IsCompleted)
             {
+            <div style="background: maroon; width: 100%; padding: 5px;">
                 <p class="textforint">
                     <strong>Закінчилося:</strong>
-                    @Model.DueTimeSpan.Days днів,
-                    @Model.DueTimeSpan.Hours год.,
-                    @Model.DueTimeSpan.Minutes хв.
+                    @Math.Abs(Model.DueTimeSpan.Days)  дн.,
+                    @Math.Abs(Model.DueTimeSpan.Hours) год.,
+                    @Math.Abs(Model.DueTimeSpan.Minutes) хв. тому
                 </p>
-            }
-        </div>
+            </div>
+            }       
     }
     else if (Model.DueTimeSpan.TotalMinutes > 0 && Model.DueTimeSpan.TotalMinutes < 120 && !Model.IsCompleted)
     {
-        <div style="background: darkred; width: 100%; padding: 5px;">
+        <div style="background:orangered; width: 100%; padding: 5px;">
             <p class="textforint">
                 <strong>Залишилось:</strong>
-                @Model.DueTimeSpan.Days днів,
+                @Model.DueTimeSpan.Days дн.,
                 @Model.DueTimeSpan.Hours год.,
                 @Model.DueTimeSpan.Minutes хв.
             </p>
         </div>
 
     }
-
 </div>

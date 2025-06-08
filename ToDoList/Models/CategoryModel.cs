@@ -4,7 +4,7 @@ namespace ToDoList.Models
 {
     public class CategoryModel
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string CategoryName { get; set; }
     }
 }

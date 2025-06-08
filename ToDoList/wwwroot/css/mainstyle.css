@@ -259,9 +259,10 @@ body {
 
 .line {
     width: 100%;
-    height: 10px;
+    height: 5px;
     background: black;
     border-radius: 10px;
+    opacity: 0.5;
 }
 .updateLabel {
     color: red !important;
@@ -345,25 +346,27 @@ body {
     .selectdb select {
         outline: none;
         width: 5rem;
-        height: 3rem;
+        height: 2.5rem;
         border-radius: 0.5rem;
-        font-size: calc(var(--index)*0.7);
+        font-size: 1rem;
         border: none;
         padding: 5px;
         background: var(--second-color);
         color: white;
         text-align: center;
     }
-    .selectdb h2 {
+    .selectdb p {
         margin-bottom: 0;
+        font-size: 1.2rem;
+        color:cadetblue;
     }
 
     .selectdb button {
         outline: none;
         width: 5rem;
-        height: 3rem;
+        height: 2.5rem;
         border-radius: 0.5rem;
-        font-size: calc(var(--index)*0.7);
+        font-size: 1rem;
         border: none;
         padding: 5px;
         background: var(--second-color);
@@ -453,9 +456,9 @@ body {
 
     .selectdb {
         position: absolute;
-        top: -30px;
+        top: -60px;
         width: 12rem;
-        height: 6rem;
+        height: 8rem;
         display: flex;
         flex-direction: column;
         justify-content: center;

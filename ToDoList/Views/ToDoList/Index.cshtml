@@ -1,4 +1,4 @@
-﻿@model ToDoList.Models.SubmitModelVM
+﻿@model ToDoList.Models.ToDoListModelVM
 
 @{
     ViewData["Title"] = "Form";
@@ -12,26 +12,24 @@
             </div>
         </a>
         <div class="selectdb">
-        <form asp-controller="Submit" asp-action="SetServise" method="post">
-            <select asp-for="id">
-                <option disabled selected>-DB-</option>
-                <option value="1">SQL</option>
-                <option value="2">XML</option>
-            </select>
-            <button class="delete" type="submit">OK</button>
-        </form>
-        <h2 class="selectdb-text">Select DB</h2>
+            <p class="selectdb-text"> змінити сховище</p>
+            <form asp-controller="ToDoList" asp-action="SetServise" method="post">
+                <select asp-for="Id">
+                    <option disabled selected>-DB-</option>
+                    <option value="1">SQL</option>
+                    <option value="2">XML</option>
+                </select>
+                <button class="delete" type="submit">OK</button>
+            </form>
+            <p class="selectdb-text"> пдключено <span>@ViewData["DB"]</span></p>
         </div>
     </div>
     <div class="line"></div>
 
     <form class="submitform" method="post" asp-action="AddTask">
         <div class="inputitem">
-            <textarea 
-                      asp-for="MyTask"
-                      value="@Model.MyTask"></textarea>
-            <span asp-validation-for="MyTask" class="text-danger"></span>
-            @if (Model.id != 0)
+            <textarea asp-for="MyTask" value="@Model.MyTask"></textarea>
+            @if (Model.Id != 0)
             {
                 <label class="updateLabel" asp-for="MyTask">UPDATE TASK    <a class="updateLabel-a" asp-action="Index"> ESC</a></label>
             }
@@ -39,6 +37,7 @@
             {
                 <label asp-for="MyTask">AddTask</label>
             }
+             <span asp-validation-for="MyTask" class="text-danger"></span>
 
         </div>
         <div class="submitpage-btnblock">
@@ -46,12 +45,12 @@
                    value="@Model.DueDateString"
                    asp-for="DueDate" />
             <span asp-validation-for="DueDate" class="text-danger"></span>
-            <input asp-for="id" type="hidden" value="@Model.id">
+            <input asp-for="Id" type="hidden" value="@Model.Id">
             <select asp-for="CategoryId" asp-items="@Model.Category">
                 <option value="@Model.Category" disabled selected>-Category-</option>
             </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            @if (Model.id != 0)
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+            @if (Model.Id != 0)
             {
                 <button class="submitbottomred">Оновити</button>
             }
@@ -71,7 +70,7 @@
                     <h4 class="resultpage_conteiner_title">Виконані / Пропущені</h4>
                 </div>
                 <div class="resultpage">
-                    @foreach (var i in Model.allTaskPast)
+                    @foreach (var i in Model.AllTaskPast)
                     {
                         <partial name="_OneTask" model="i" />
                     }
@@ -84,7 +83,7 @@
                     <p class="resultpage_conteiner_next"></p>
                 </div>
                 <div class="resultpage">
-                    @foreach (var i in Model.allTaskNow)
+                    @foreach (var i in Model.AllTaskNow)
                     {
                         <partial name="_OneTask" model="i" />
                     }
@@ -96,7 +95,7 @@
                     <p class="resultpage_conteiner_nextnow"></p>
                 </div>
                 <div class="resultpage">
-                    @foreach (var i in Model.allTaskFuture)
+                    @foreach (var i in Model.AllTaskFuture)
                     {
                         <partial name="_OneTask" model="i" />
                     }

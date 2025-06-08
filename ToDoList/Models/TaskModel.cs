@@ -4,7 +4,7 @@ namespace ToDoList.Models
 {
     public class TaskModel
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string MyTask { get; set; }
 
         public DateTime DueDate { get; set; }

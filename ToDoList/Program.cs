@@ -3,9 +3,24 @@ using GraphQL.MicrosoftDI;
 using GraphQL.Server;
 using ToDoList.GraphQLTypes;
 using ToDoList.Schems;
+using ToDoList.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IToDoServiceFactory, ToDoServiceFactory>()
+                .AddScoped<TodoQuery>()
+                .AddScoped<ToDoMutation>()
+                .AddScoped<GraphQL.Types.ISchema, ToDoSchema>();
+
+builder.Services
+    .AddGraphQL(builder => builder
+        .AddSystemTextJson()
+        .AddSchema<ToDoSchema>()
+        .AddGraphTypes()
+    );
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
@@ -16,32 +31,9 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-//builder.Services
-//    .AddGraphQLServer()
-//    .AddQueryType <QueryDataGQL>()
-//    .AddMutationType<MutationDataGQL>();
-
-
-
-builder.Services.AddSingleton<TodoQuery>();
-builder.Services.AddSingleton<ToDoMutation>();
-
-builder.Services.AddSingleton<GraphQL.Types.ISchema, ToDoSchema>(services => new ToDoSchema(new SelfActivatingServiceProvider(services)));
-
-builder.Services
-    .AddGraphQL(builder => builder
-        .AddSystemTextJson()
-        .AddSchema<ToDoSchema>()
-        .AddGraphTypes()
-    );
-
-
-
-
 
 var app = builder.Build();
 
-app.UseCors("CorsPolicy");
 
 if (!app.Environment.IsDevelopment())
 {
@@ -53,9 +45,10 @@ app.MapGraphQL("/graphql");
 app.MapGraphQLPlayground("/ui/playground");
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseAuthorization();
 app.UseRouting();
+app.UseCors("CorsPolicy");
+app.UseAuthorization();
+app.UseStaticFiles();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=ToDoList}/{action=Index}/{Id?}");

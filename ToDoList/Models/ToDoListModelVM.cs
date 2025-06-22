@@ -19,6 +19,7 @@ namespace ToDoList.Models
         [Required(ErrorMessage = "Select category")]
         public int CategoryId { get; set; }
         public string? DueDateString { get; set; }
+        public string? Store { get; set; }
         public List<TaskModel>? AllTaskNow { get; set; }
         public List<TaskModel>? AllTaskPast { get; set; }
         public List<TaskModel>? AllTaskFuture { get; set; }

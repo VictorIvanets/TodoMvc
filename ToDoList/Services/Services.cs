@@ -4,9 +4,9 @@ namespace ToDoList.Services
 {
     public abstract class Service
     {
-        public abstract bool AddTask(CreateTaskModel newTask);
+        public abstract int AddTask(CreateTaskModel newTask);
 
-        public abstract bool UpdateTask(int id, CreateTaskModel newTask);
+        public abstract int UpdateTask(int id, CreateTaskModel newTask);
 
         public abstract List<TaskModel> AllTask();
 
@@ -14,9 +14,9 @@ namespace ToDoList.Services
 
         public abstract TaskModel GetOne(int id);
 
-        public abstract bool IsCompleted(int id, bool isCompleted, string date);
+        public abstract bool IsCompleted(int id, string date);
 
-        public abstract bool DeleteTask(int id);
+        public abstract int DeleteTask(int id);
      
     }
 }
@@ -72,7 +72,7 @@ namespace ToDoList.Services
 //    new XElement("MyTask",
 //        new XAttribute("Id", "1"),
 //        new XElement("Task", task.Task),
-//        new XElement("DataTime", task.DataTime),
+//        new XElement("DateTime", task.DateTime),
 //        new XElement("CategoryId", task.CategoryId),
 //        new XElement("isCompleted", (byte)(task.isCompleted ? 1 : 0))
 //    )

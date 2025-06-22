@@ -1,7 +1,7 @@
 ﻿using GraphQL.Types;
 using ToDoList.Models;
 
-namespace ToDoList.Schems
+namespace ToDoList.GraphQLTypes
 {
     public class InputTaskTypes : InputObjectGraphType<CreateTaskModel>
     {
@@ -9,7 +9,7 @@ namespace ToDoList.Schems
         {
             Name = "AddTask";
             Field(x => x.Task);
-            Field(x => x.DataTime);
+            Field(x => x.DateTime);
             Field(x => x.CategoryId);
         }
     }

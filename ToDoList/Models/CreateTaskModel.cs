@@ -8,7 +8,7 @@ namespace ToDoList.Models
 
         public required string Task { get; set; }
  
-        public required string DataTime { get; set; }
+        public required string DateTime { get; set; }
   
         public int CategoryId { get; set; }
 

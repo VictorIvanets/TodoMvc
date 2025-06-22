@@ -24,7 +24,7 @@
             }
             else
             {
-                <form asp-controller="ToDoList" asp-action="SetUnCompleted" method="post">
+                <form asp-controller="ToDoList" asp-action="SetIsCompleted" method="post">
                     <input type="hidden" name="id" value="@Model.Id" />
                     <button class="completedbtn" title="set uncompleted" type="submit">✔</button>
                 </form>

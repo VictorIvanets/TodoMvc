@@ -1,39 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Root>
-  <MyTask Id="567">
-    <Task>New Task in XML</Task>
-    <DataTime>08.06.2025 17:57:55</DataTime>
-    <CategoryId>2</CategoryId>
-    <IsCompleted>0</IsCompleted>
-  </MyTask>
   <MyTask Id="263">
-    <Task>One task for weekend</Task>
-    <DataTime>08.06.2025 16:08:41</DataTime>
-    <CategoryId>2</CategoryId>
-    <IsCompleted>1</IsCompleted>
-  </MyTask>
-  <MyTask Id="6216">
-    <Task>On task for work</Task>
-    <DataTime>08.06.2025 15:27:32</DataTime>
+    <Task>New Task in XML UPDATE TASK GQL! COMPLITE</Task>
+    <DateTime>19.06.2025 15:14:54</DateTime>
     <CategoryId>1</CategoryId>
     <IsCompleted>1</IsCompleted>
   </MyTask>
-  <MyTask Id="1101">
-    <Task>New task GQL</Task>
-    <DataTime>08.06.2025 17:08:40</DataTime>
-    <CategoryId>1</CategoryId>
-    <IsCompleted>0</IsCompleted>
+  <MyTask Id="3769">
+    <Task>TEST GQL COMPLITE SET ID SCALAR5555</Task>
+    <DateTime>19.06.2025 15:14:54</DateTime>
+    <CategoryId>4</CategoryId>
+    <IsCompleted>1</IsCompleted>
   </MyTask>
-  <MyTask Id="3111">
-    <Task>Cool Task GQL</Task>
-    <DataTime>2025-06-10T14:57:55</DataTime>
+  <MyTask Id="2839">
+    <Task>new test</Task>
+    <DateTime>21.06.2025 13:21:58</DateTime>
     <CategoryId>3</CategoryId>
     <IsCompleted>0</IsCompleted>
   </MyTask>
-  <MyTask Id="1102">
-    <Task>UPDATE TASK GQL! COMPLITE</Task>
-    <DataTime>08.06.2025 16:08:39</DataTime>
+  <MyTask Id="4563">
+    <Task>new test 222 5</Task>
+    <DateTime>2025-06-21T14:10</DateTime>
+    <CategoryId>1</CategoryId>
+    <IsCompleted>0</IsCompleted>
+  </MyTask>
+  <MyTask Id="333">
+    <Task>Нова запланована задача на неділю</Task>
+    <DateTime>2025-06-22T13:21</DateTime>
     <CategoryId>2</CategoryId>
-    <IsCompleted>1</IsCompleted>
+    <IsCompleted>0</IsCompleted>
+  </MyTask>
+  <MyTask Id="7220">
+    <Task>Завдання на зараз</Task>
+    <DateTime>2025-06-21T15:11</DateTime>
+    <CategoryId>3</CategoryId>
+    <IsCompleted>0</IsCompleted>
+  </MyTask>
+  <MyTask Id="3933">
+    <Task>На веір</Task>
+    <DateTime>2025-06-21T16:12</DateTime>
+    <CategoryId>4</CategoryId>
+    <IsCompleted>0</IsCompleted>
   </MyTask>
 </Root>

@@ -5,24 +5,32 @@ namespace ToDoList.Services
 {
     public class XMLService : Service
     {
-        public override bool AddTask(CreateTaskModel task)
+        public override int AddTask(CreateTaskModel task)
         {
             try
             {
+                if (!DateTime.TryParse(task.DateTime, out DateTime result))
+                    throw new Exception("DateTime is not valid! format date YYYY-MM-DDTHH:MM:SS");
+
+                int countCategory = GetAllCategory().Count;
+                if (countCategory < task.CategoryId)
+                    throw new Exception($"CategoryId is not valid! Max value: {countCategory}");
+
                 XDocument doc = XDocument.Load("./MyTask.xml");
                 if (doc == null || doc.Root == null) throw new Exception("file MyTask error");
 
+                int randomId = Int32.Parse(new Random().Next(10000).ToString());
                 doc.Root.Add(new XElement("MyTask",
-                        new XAttribute("Id", new Random().Next(10000).ToString()),
+                        new XAttribute("Id", randomId),
                         new XElement("Task", task.Task),
-                        new XElement("DataTime", task.DataTime),
+                        new XElement("DateTime", task.DateTime),
                         new XElement("CategoryId", task.CategoryId),
                         new XElement("IsCompleted", (byte)(task.IsCompleted ? 1 : 0))
                     ));
 
                 doc.Save("./MyTask.xml");
 
-                return true;
+                return randomId;
             }
             catch (Exception e)
             {
@@ -46,8 +54,8 @@ namespace ToDoList.Services
                     {
                         oneTask.Id = Int32.Parse(item.Attribute("Id")?.Value ?? "");
                         oneTask.MyTask = item.Element("Task")?.Value ?? "";
-                        oneTask.DueDate = DateTime.Parse(item.Element("DataTime")?.Value ?? "");
-                        oneTask.DueTimeSpan = DateTime.Parse(item.Element("DataTime")?.Value ?? "") - DateTime.Now;
+                        oneTask.DueDate = DateTime.Parse(item.Element("DateTime")?.Value ?? "");
+                        oneTask.DueTimeSpan = DateTime.Parse(item.Element("DateTime")?.Value ?? "") - DateTime.Now;
                         oneTask.CategoryId = Int32.Parse(item.Element("CategoryId")?.Value ?? "");
                         oneTask.IsCompleted = item.Element("IsCompleted")?.Value == "1" ? true : false;
                         oneTask.CategoryName = category
@@ -75,13 +83,13 @@ namespace ToDoList.Services
                 if (category.Count == 0) throw new Exception("Category is empty");
                 XDocument doc = XDocument.Load("./MyTask.xml");
                 var items = doc.Element("Root")?.Elements("MyTask") ?? [];
-                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("id not found");
+                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("Error! Id not found");
 
                 {
                     oneTask.Id = Int32.Parse(getOneTask?.Attribute("Id")?.Value ?? "");
                     oneTask.MyTask = getOneTask?.Element("Task")?.Value ?? "";
-                    oneTask.DueDate = DateTime.Parse(getOneTask?.Element("DataTime")?.Value ?? "");
-                    oneTask.DueTimeSpan = DateTime.Parse(getOneTask?.Element("DataTime")?.Value ?? "") - DateTime.Now;
+                    oneTask.DueDate = DateTime.Parse(getOneTask?.Element("DateTime")?.Value ?? "");
+                    oneTask.DueTimeSpan = DateTime.Parse(getOneTask?.Element("DateTime")?.Value ?? "") - DateTime.Now;
                     oneTask.CategoryId = Int32.Parse(getOneTask?.Element("CategoryId")?.Value ?? "");
                     oneTask.IsCompleted = getOneTask?.Element("IsCompleted")?.Value == "1" ? true : false;
                     oneTask.CategoryName = category
@@ -97,7 +105,7 @@ namespace ToDoList.Services
             return oneTask;
         }
 
-        public override bool IsCompleted(int id, bool isCompleted, string date)
+        public override bool IsCompleted(int id, string date)
         {
             TaskModel oneTask = new();
             try
@@ -107,12 +115,14 @@ namespace ToDoList.Services
                 if (category.Count == 0) throw new Exception("Category is empty");
                 XDocument doc = XDocument.Load("./MyTask.xml");
                 var items = doc.Element("Root")?.Elements("MyTask") ?? [];
-                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("Id error");
-                string isCompletedString = !isCompleted ? "0" : "1";
-                getOneTask.SetElementValue("IsCompleted", isCompletedString);
-                getOneTask.SetElementValue("DataTime", date);
+                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("Error! Id not found");
+
+                bool isCompl = getOneTask.Element("IsCompleted")?.Value == "1" ? true : false;
+
+                getOneTask.SetElementValue("IsCompleted", !isCompl ? "1" : "0");
+                getOneTask.SetElementValue("DateTime", date);
                 doc.Save("./MyTask.xml");
-                return true;
+                return !isCompl;
             }
             catch (Exception e)
             {
@@ -122,7 +132,7 @@ namespace ToDoList.Services
 
         }
 
-        public override bool UpdateTask(int id, CreateTaskModel task)
+        public override int UpdateTask(int id, CreateTaskModel task)
         {
             TaskModel oneTask = new();
             try
@@ -132,13 +142,13 @@ namespace ToDoList.Services
                 if (category.Count == 0) throw new Exception("Category is empty");
                 XDocument doc = XDocument.Load("./MyTask.xml");
                 var items = doc.Element("Root")?.Elements("MyTask") ?? [];
-                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("Id error");
+                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("Error! Id not found");
                 getOneTask.SetElementValue("IsCompleted", (byte)(task.IsCompleted ? 1 : 0));
-                getOneTask.SetElementValue("DataTime", task.DataTime);
+                getOneTask.SetElementValue("DateTime", task.DateTime);
                 getOneTask.SetElementValue("Task", task.Task);
                 getOneTask.SetElementValue("CategoryId", task.CategoryId);
                 doc.Save("./MyTask.xml");
-                return true;
+                return id;
             }
             catch (Exception e)
             {
@@ -175,7 +185,7 @@ namespace ToDoList.Services
             return dataList;
         }
 
-        public override bool DeleteTask(int id)
+        public override int DeleteTask(int id)
         {
             TaskModel oneTask = new();
             try
@@ -183,12 +193,12 @@ namespace ToDoList.Services
                 XDocument doc = XDocument.Load("./MyTask.xml");
 
                 var items = doc.Element("Root")?.Elements("MyTask") ?? [];
-                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("id not found");
+                var getOneTask = items.FirstOrDefault(i => i.Attribute("Id")?.Value == id.ToString()) ?? throw new Exception("Error! Id not found");
                 doc.Descendants("MyTask")
                     .Where(x => (string)x.Attribute("Id") == id.ToString())
                     .Remove();
                 doc.Save("./MyTask.xml");
-                return true;
+                return id;
             }
             catch (Exception e)
             {

@@ -10,14 +10,62 @@ namespace ToDoList.Controllers
     {
         private readonly Service _Service;
 
-        public ToDoListController()
+
+        public ToDoListController(IToDoServiceFactory factory)
         {
-            _Service = StoreXML.GetStorage() ? new SQLService() : new XMLService();
+            _Service = factory.GetService();
         }
 
         public IActionResult Index()
         {
-            ViewData["DB"] = StoreXML.GetStorage() ? "SQL" : "XML";
+            List<TaskModel> getalltask = _Service.AllTask();
+            List<CategoryModel> category = _Service.GetAllCategory();
+            List<SelectListItem> categorySelectList = new();
+
+            foreach (CategoryModel item in category)
+            {
+                categorySelectList.Add(new SelectListItem
+                {
+                    Text = item.CategoryName,
+                    Value = item.Id.ToString(),
+                });
+            }
+
+            List<TaskModel> taskNow = new();
+            List<TaskModel> taskPast = new();
+            List<TaskModel> taskFuture = new();
+
+            foreach (var item in getalltask)
+            {
+                if (item.IsCompleted)
+                    taskPast.Add(item);
+                else if (item.DueTimeSpan.TotalMinutes < 120 && !item.IsCompleted)
+                    taskNow.Add(item);
+                else if (item.DueTimeSpan.TotalMinutes > 120 && !item.IsCompleted)
+                    taskFuture.Add(item);
+            }
+
+            taskPast.Reverse();
+            taskNow.Reverse();
+
+
+            ToDoListModelVM init = new()
+            {
+                Store = StoreXML.GetStorage() ? "SQL" : "XML",
+                DueDate = DateTime.Now,
+                Category = categorySelectList,
+                AllTaskNow = taskNow,
+                AllTaskFuture = taskFuture,
+                AllTaskPast = taskPast,
+            };
+            return View(init);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index(int? id)
+        {
 
             List<TaskModel> getalltask = _Service.AllTask();
             List<CategoryModel> category = _Service.GetAllCategory();
@@ -38,70 +86,24 @@ namespace ToDoList.Controllers
 
             foreach (var item in getalltask)
             {
-                if (item.DueTimeSpan.TotalMinutes < 0 || item.IsCompleted)
+
+                if (item.IsCompleted)
                     taskPast.Add(item);
+                else if (item.DueTimeSpan.TotalMinutes < 120 && !item.IsCompleted)
+                    taskNow.Add(item);
                 else if (item.DueTimeSpan.TotalMinutes > 120 && !item.IsCompleted)
                     taskFuture.Add(item);
-                else if (item.DueTimeSpan.TotalMinutes > 0 && item.DueTimeSpan.TotalMinutes < 120 && !item.IsCompleted)
-                    taskNow.Add(item);
             }
 
             taskPast.Reverse();
+            taskNow.Reverse();
 
             ToDoListModelVM init = new()
             {
-                DueDate = DateTime.Now,
                 Category = categorySelectList,
                 AllTaskNow = taskNow,
                 AllTaskFuture = taskFuture,
                 AllTaskPast = taskPast,
-            };
-            return View(init);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Index(int? id)
-        {
-
-            List<TaskModel> getalltask = _Service.AllTask();
-            List<CategoryModel> category = _Service.GetAllCategory();
-            List<SelectListItem> CategorySelectList = new();
-
-            foreach (CategoryModel item in category)
-            {
-                CategorySelectList.Add(new SelectListItem
-                {
-                    Text = item.CategoryName,
-                    Value = item.Id.ToString(),
-                });
-            }
-
-            List<TaskModel> TaskNow = new();
-            List<TaskModel> TaskPast = new();
-            List<TaskModel> TaskFuture = new();
-
-            foreach (var item in getalltask)
-            {
-                if (item.DueTimeSpan.TotalMinutes < 0)
-                    TaskPast.Add(item);
-                else if (item.DueTimeSpan.TotalMinutes > 120)
-                    TaskFuture.Add(item);
-                else if (item.DueTimeSpan.TotalMinutes > 0
-                    && item.DueTimeSpan.TotalMinutes < 120)
-
-                    TaskNow.Add(item);
-            }
-
-            TaskPast.Reverse();
-
-            ToDoListModelVM init = new()
-            {
-                Category = CategorySelectList,
-                AllTaskNow = TaskNow,
-                AllTaskFuture = TaskFuture,
-                AllTaskPast = TaskPast,
             };
 
             if (id != null)
@@ -126,15 +128,15 @@ namespace ToDoList.Controllers
         {
             if (ModelState.IsValid)
             {
-                TimeSpan DueTimeSpan = model.DueDate - DateTime.Now;
-                string dataActual = DueTimeSpan.TotalMinutes < 0
+                TimeSpan dueTimeSpan = model.DueDate - DateTime.Now;
+                string dataActual = dueTimeSpan.TotalMinutes < 0
                     ? DateTime.Now.ToString()
                     : model.DueDate.ToString();
 
                 CreateTaskModel newTask = new()
                 {
                     Task = model.MyTask,
-                    DataTime = dataActual,
+                    DateTime = dataActual,
                     CategoryId = model.CategoryId,
                     IsCompleted = false,
                 };
@@ -150,23 +152,19 @@ namespace ToDoList.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SetIsCompleted(int id)
         {
-            _Service.IsCompleted(id, true, DateTime.Now.ToString());
+            _Service.IsCompleted(id, DateTime.Now.ToString());
             return RedirectToAction("Index");
         }
 
+
         [HttpPost]
-        public IActionResult SetServise(int id)
+        [ValidateAntiForgeryToken]
+        public IActionResult SetService(int id)
         {
             StoreXML.SetStorage(id);
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public IActionResult SetUnCompleted(int id)
-        {
-            _Service.IsCompleted(id, false, DateTime.Now.ToString());
             return RedirectToAction("Index");
         }
 

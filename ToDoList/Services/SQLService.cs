@@ -47,20 +47,27 @@ namespace ToDoList.Services
         }
 
 
-        public override bool AddTask(CreateTaskModel task)
+        public override int AddTask(CreateTaskModel task)
         {
             try
             {
-                string sqlString = "INSERT INTO [todolist] ( Task, DueDate, CategoryId, IsCompleted ) VALUES (@newTask, @date, @categoryId, @IsCompleted)";
+                if (!DateTime.TryParse(task.DateTime, out DateTime result))  
+                    throw new Exception("DateTime is not valid! format date YYYY-MM-DDTHH:MM:SS");
+
+                int countCategory = GetAllCategory().Count;
+                if(countCategory < task.CategoryId)
+                    throw new Exception($"CategoryId is not valid! Max value: {countCategory}");
+
+
+                string sqlString = "INSERT INTO [todolist] ( Task, DueDate, CategoryId, IsCompleted ) OUTPUT INSERTED.Id VALUES (@newTask, @date, @categoryId, @IsCompleted)";
                 using SqlCommand command = new(sqlString, _db.GetConnection());
                 command.Parameters.AddWithValue("@newTask", task.Task);
-                command.Parameters.AddWithValue("@date", task.DataTime);
+                command.Parameters.AddWithValue("@date", task.DateTime);
                 command.Parameters.AddWithValue("@categoryId", task.CategoryId);
                 command.Parameters.AddWithValue("@IsCompleted", (byte)(task.IsCompleted ? 1 : 0));
                 _db.OpenConnection();
-                command.ExecuteNonQuery();
-                return true;
-
+                int insertedId = (int)command.ExecuteScalar();
+                return insertedId;
             }
             catch (Exception e)
             {
@@ -74,7 +81,7 @@ namespace ToDoList.Services
         }
 
 
-        public override bool UpdateTask(int id, CreateTaskModel task)
+        public override int UpdateTask(int id, CreateTaskModel task)
         {
             try
             {
@@ -82,12 +89,13 @@ namespace ToDoList.Services
                 using SqlCommand command = new(sqlString, _db.GetConnection());
                 command.Parameters.AddWithValue("@Id", id);
                 command.Parameters.AddWithValue("@newTask", task.Task);
-                command.Parameters.AddWithValue("@date", task.DataTime);
+                command.Parameters.AddWithValue("@date", task.DateTime);
                 command.Parameters.AddWithValue("@categoryId", task.CategoryId);
                 command.Parameters.AddWithValue("@IsCompleted", (byte)(task.IsCompleted ? 1 : 0));
                 _db.OpenConnection();
-                command.ExecuteNonQuery();
-                return true;
+                int affectedRows = command.ExecuteNonQuery();
+                if (affectedRows > 0) return id;
+                throw new Exception("update error");
             }
             catch (Exception e)
             {
@@ -136,7 +144,7 @@ namespace ToDoList.Services
             }
         }
 
-        public override bool DeleteTask(int id)
+        public override int DeleteTask(int id)
         {
             try
             {
@@ -144,8 +152,9 @@ namespace ToDoList.Services
                 using SqlCommand command = new SqlCommand(sqlString, _db.GetConnection());
                 command.Parameters.AddWithValue("@Id", id);
                 _db.OpenConnection();
-                command.ExecuteNonQuery();
-                return true;
+                int affectedRows = command.ExecuteNonQuery();
+                if (affectedRows > 0) return id;
+                throw new Exception("delete error");
             }
             catch (Exception e)
             {
@@ -158,18 +167,20 @@ namespace ToDoList.Services
             }
         }
 
-        public override bool IsCompleted(int id, bool isCompleted, string date)
+        public override bool IsCompleted(int id, string date)
         {
             try
             {
+                TaskModel gotItem = GetOne(id);
+
                 string sqlString = "UPDATE [todolist] SET IsCompleted = @forIsCompleted, DueDate = @date WHERE todolist.Id = @Id";
                 using SqlCommand command = new(sqlString, _db.GetConnection());
-                command.Parameters.AddWithValue("@forIsCompleted", (byte)(isCompleted ? 1 : 0));
+                command.Parameters.AddWithValue("@forIsCompleted", (byte)(!gotItem.IsCompleted ? 1 : 0));
                 command.Parameters.AddWithValue("@date", date);
                 command.Parameters.AddWithValue("@Id", id);
                 _db.OpenConnection();
                 command.ExecuteNonQuery();
-                return true;
+                return !gotItem.IsCompleted;
             }
             catch (Exception e)
             {
@@ -191,6 +202,10 @@ namespace ToDoList.Services
                 _db.OpenConnection();
                 using SqlCommand command = new(sqlString, _db.GetConnection());
                 using SqlDataReader reader = command.ExecuteReader();
+                var test = reader.HasRows;
+                var test1 = reader.FieldCount;
+                var test2 = reader.HasRows;
+
                 while (reader.Read())
                 {
                     CategoryModel oneCategory = new();

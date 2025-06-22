@@ -7,26 +7,27 @@ namespace ToDoList.Schems
 {
     public class TodoQuery : ObjectGraphType
     {
-        public TodoQuery()
+        public TodoQuery(IToDoServiceFactory factory)
         {
-            Field<ListGraphType<ToDoType>>("alltask")
-              .Resolve(context => GetDB.Service().AllTask());
+            var _service = factory.GetService();
+
+            Field<ListGraphType<ToDoType>>("allTask")
+              .Resolve(context => _service.AllTask());
 
             Field<ListGraphType<CategoryType>>("allCategory")
-              .Resolve(context => GetDB.Service().GetAllCategory());
+              .Resolve(context => _service.GetAllCategory());
 
             Field<ToDoType>("oneTask")
               .Arguments(new QueryArguments(
-                    new QueryArgument<IntGraphType> { Name = "id" }
+                    new QueryArgument<IdGraphType> { Name = "id" }
                 ))
               .Resolve(context =>
                 {
-                     var id = context.GetArgument<int?>("id");
+                     int? id = context.GetArgument<int?>("id");
                      if (id.HasValue)
-                     {
-                         int Id = id.Value;                  
+                     {               
                          try {
-                             return GetDB.Service().GetOne(Id);
+                             return _service.GetOne(id.Value);
                          }
                          catch (Exception ex)
                          {

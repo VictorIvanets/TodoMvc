@@ -1,5 +1,7 @@
 ﻿using GraphQL;
 using GraphQL.Types;
+using System.Threading.Tasks;
+using ToDoList.GraphQLTypes;
 using ToDoList.Models;
 using ToDoList.Services;
 
@@ -7,24 +9,26 @@ namespace ToDoList.Schems
 {
     public class ToDoMutation : ObjectGraphType
     {
-        public ToDoMutation()
+        public ToDoMutation(IToDoServiceFactory factory)
         {
-            Field<bool>("addTask")
+            Service _service = factory.GetService();
+
+            Field<ToDoType>("addTask")
                 .Argument<NonNullGraphType<InputTaskTypes>>("addTask")
                 .Resolve(context =>
                 {
                     try
                     {
-                        var task = context.GetArgument<CreateTaskModel>("addTask");
+                        CreateTaskModel task = context.GetArgument<CreateTaskModel>("addTask");
 
-                        CreateTaskModel newTask = new CreateTaskModel
+                        CreateTaskModel newTask = new()
                         {
                             Task = task.Task,
-                            DataTime = task.DataTime,
+                            DateTime = task.DateTime,
                             CategoryId = task.CategoryId,
                             IsCompleted = false,
                         };
-                        return GetDB.Service().AddTask(newTask);
+                        return _service.GetOne(_service.AddTask(newTask));                   
                     }
                     catch (Exception ex)
                     {
@@ -39,7 +43,7 @@ namespace ToDoList.Schems
                {
                    try
                    {
-                       var getid = context.GetArgument<bool>("isSql");
+                       bool getid = context.GetArgument<bool>("isSql");
                        if (getid) StoreXML.SetStorage(1);                   
                        else StoreXML.SetStorage(2);                     
                        return StoreXML.GetStorage() ? "SQL" : "XML";
@@ -50,22 +54,23 @@ namespace ToDoList.Schems
                    }
                });
 
-            Field<bool>("updateTask")
+            Field<ToDoType>("updateTask")
              .Argument<NonNullGraphType<InputUpdateTaskTypes>>("task")
              .Resolve(context =>
              {
                  try
                  {
-                     var task = context.GetArgument<CreateTaskModel>("task");
+                     CreateTaskModel task = context.GetArgument<CreateTaskModel>("task");
 
                      CreateTaskModel newTask = new CreateTaskModel
                      {
                          Task = task.Task,
-                         DataTime = task.DataTime,
+                         DateTime = task.DateTime,
                          CategoryId = task.CategoryId,
                          IsCompleted = false,
                      };
-                     return GetDB.Service().UpdateTask(task.Id, newTask);
+
+                     return _service.GetOne(_service.UpdateTask(task.Id, newTask));
                  }
                  catch (Exception ex)
                  {
@@ -73,19 +78,18 @@ namespace ToDoList.Schems
                  }
              });
 
-            Field<bool>("DeleteTask")
+            Field<IdGraphType>("DeleteTask")
               .Arguments(new QueryArguments(
-                    new QueryArgument<IntGraphType> { Name = "id" }
+                    new QueryArgument<IdGraphType> { Name = "id" }
                 ))
               .Resolve(context =>
               {
-                  var id = context.GetArgument<int?>("id");
+                  int? id = context.GetArgument<int?>("id");
                   if (id.HasValue)
                   {
-                      int Id = id.Value;
                       try
                       {
-                          return GetDB.Service().DeleteTask(Id);
+                          return _service.DeleteTask(id.Value);
                       }
                       catch (Exception ex)
                       {
@@ -97,17 +101,18 @@ namespace ToDoList.Schems
 
             Field<bool>("SetIsCompleted")
               .Arguments(new QueryArguments(
-                    new QueryArgument<IntGraphType> { Name = "id" }
+                    new QueryArgument<IdGraphType> { Name = "id" }
                 ))
               .Resolve(context =>
               {
-                  var id = context.GetArgument<int?>("id");
+                  int? id = context.GetArgument<int?>("id");
                   if (id.HasValue)
                   {
-                      int Id = id.Value;
                       try
                       {
-                          return GetDB.Service().IsCompleted(Id, true, DateTime.Now.ToString());
+                          return _service.IsCompleted(id.Value, DateTime.Now.ToString());
+                          
+
                       }
                       catch (Exception ex)
                       {
@@ -116,32 +121,6 @@ namespace ToDoList.Schems
                   }
                   throw new ExecutionError("error id");
               });
-
-            Field<bool>("SetUnCompleted")
-              .Arguments(new QueryArguments(
-                    new QueryArgument<IntGraphType> { Name = "id" }
-                ))
-              .Resolve(context =>
-              {
-                  var id = context.GetArgument<int?>("id");
-                  if (id.HasValue)
-                  {
-                      int Id = id.Value;
-                      try
-                      {
-                          return GetDB.Service().IsCompleted(Id, false, DateTime.Now.ToString());
-                      }
-                      catch (Exception ex)
-                      {
-                          throw new ExecutionError(ex.Message);
-                      }
-                  }
-                  throw new ExecutionError("error id");
-              });
-
-
-
-
         }
     }
 }
